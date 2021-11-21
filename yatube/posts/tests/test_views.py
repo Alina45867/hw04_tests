@@ -30,18 +30,20 @@ class TaskPagesTests(TestCase):
 
     def test_pages_uses_correct_template(self):
         templates_pages_names = {
-            'posts/index.html': reverse('posts:index'),
-            'posts/group_list.html': (reverse(
-                'posts:group_list', kwargs={'slug': 'test_slug'})),
-            'posts/profile.html': (reverse(
-                'posts:profile', kwargs={'username': 'StasBasov'})),
-            'posts/post_detail.html': (reverse(
-                'posts:post_detail', args='1')),
+            reverse('posts:index'): 'posts/index.html',
+            (reverse(
+                'posts:group_list', kwargs={
+                    'slug': 'test_slug'})): 'posts/group_list.html',
+            (reverse(
+                'posts:profile', kwargs={
+                    'username': 'StasBasov'})): 'posts/profile.html',
+            (reverse(
+                'posts:post_detail', args='1')): 'posts/post_detail.html',
             (reverse('posts:post_edit', args={
                 'slug': 'test-slug'})): 'posts/create_post.html',
             reverse('posts:create_post'): 'posts/create_post.html',
         }
-        for template, reverse_name in templates_pages_names.items():
+        for template, reverse_name in templates_pages_names():
             with self.subTest(reverse_name=reverse_name):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
