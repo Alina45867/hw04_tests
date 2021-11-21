@@ -11,16 +11,15 @@ class StaticURLTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='user')
         cls.group = Group.objects.create(
-                title='Test',
-                slug='test_slug',
-                description='testing',
-
-            )
+            title='Test',
+            slug='test_slug',
+            description='testing',
+        )
         cls.post = Post.objects.create(
-                author=cls.user,
-                text='Test_group',
-                group=cls.group,
-            )
+            author=cls.user,
+            text='Test_group',
+            group=cls.group,
+        )
 
     def setUp(self):
         self.guest_client = Client()
