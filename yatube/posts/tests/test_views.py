@@ -29,17 +29,19 @@ class TaskPagesTests(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_pages_uses_correct_template(self):
-        templates_pages_names = [
-            reverse('posts:index'),
-            (reverse('posts:group_list', kwargs={'slug': 'test_slug'})),
-            (reverse(
+        templates_pages_names = {
+            'posts/index.html': reverse('posts:index'),
+            'posts/group_list.html': (reverse(
+                'posts:group_list', kwargs={'slug': 'test_slug'})),
+            'posts/profile.html': (reverse(
                 'posts:profile', kwargs={'username': 'StasBasov'})),
-            (reverse('posts:post_detail', args='1')),
-            (reverse('posts:post_edit', args={
-                'slug': 'test-slug'})),
-            reverse('posts:create_post'),
-        ]
-        for template, reverse_name in templates_pages_names():
+            'posts/post_detail.html': (reverse(
+                'posts:post_detail', args='1')),
+            'posts/create_post.html': (reverse(
+                'posts:post_edit', args={'slug': 'test-slug'})),
+            'posts/create_post.html': reverse('posts:create_post'),
+        }
+        for template, reverse_name in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
@@ -126,18 +128,18 @@ class PaginatorViewsTest(TestCase):
             self.assertEqual(len(response.context['object_list']), 3)
 
         def test_paginator_on_pages(self):
-            first_page_len_posts = 10
+            first_page_len_posts = 10 
             second_page_len_posts = 3
             context = {
                 reverse('posts:index'): first_page_len_posts,
                 reverse('posts:index') + '?page=2': second_page_len_posts,
                 reverse(
                     'posts:group_list', kwargs={
-                        'slug': self.group.slug, }):
+                        'slug': self.group.slug,}):
                 first_page_len_posts,
                 reverse(
                     'posts:group_list', kwargs={
-                        'slug': self.group.slug, })
+                        'slug': self.group.slug,})
                 + '?page=2': second_page_len_posts,
                 reverse(
                     'posts:profile', kwargs={
@@ -146,8 +148,7 @@ class PaginatorViewsTest(TestCase):
                 reverse(
                     'posts:profile', kwargs={
                         'username': self.user.username})
-                + '?page=2': second_page_len_posts,
-            }
+                + '?page=2': second_page_len_posts,}
             for reverse_page, len_posts in context.items():
                 with self.subTest(reverse=reverse):
                     self.assertEqual(len(self.client.get(
