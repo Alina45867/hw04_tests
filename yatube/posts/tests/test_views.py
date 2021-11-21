@@ -128,18 +128,18 @@ class PaginatorViewsTest(TestCase):
             self.assertEqual(len(response.context['object_list']), 3)
 
         def test_paginator_on_pages(self):
-            first_page_len_posts = 10 
+            first_page_len_posts = 10
             second_page_len_posts = 3
             context = {
                 reverse('posts:index'): first_page_len_posts,
                 reverse('posts:index') + '?page=2': second_page_len_posts,
                 reverse(
                     'posts:group_list', kwargs={
-                        'slug': self.group.slug,}):
+                        'slug': self.group.slug, }):
                 first_page_len_posts,
                 reverse(
                     'posts:group_list', kwargs={
-                        'slug': self.group.slug,})
+                        'slug': self.group.slug, })
                 + '?page=2': second_page_len_posts,
                 reverse(
                     'posts:profile', kwargs={
@@ -148,7 +148,7 @@ class PaginatorViewsTest(TestCase):
                 reverse(
                     'posts:profile', kwargs={
                         'username': self.user.username})
-                + '?page=2': second_page_len_posts,}
+                + '?page=2': second_page_len_posts, }
             for reverse_page, len_posts in context.items():
                 with self.subTest(reverse=reverse):
                     self.assertEqual(len(self.client.get(

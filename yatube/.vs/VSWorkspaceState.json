@@ -3,8 +3,10 @@
     "",
     "\\posts",
     "\\posts\\tests",
+    "\\templates",
+    "\\templates\\posts",
     "\\yatube"
   ],
-  "SelectedNode": "\\posts\\tests\\test_models.py",
+  "SelectedNode": "\\tmpysjobukl",
   "PreviewInSolutionExplorer": false
 }
