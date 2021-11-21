@@ -17,22 +17,22 @@ class PostFormTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='user')
         cls.group = Group.objects.create(
-                title='Test',
-                slug='test_slug',
-                description='testing',
-            )
+            title='Test',
+            slug='test_slug',
+            description='testing',
+        )
         cls.post = Post.objects.create(
-                author=cls.user,
-                text='Test_post',
-                group=cls.group,
-            )
+            author=cls.user,
+            text='Test_post',
+            group=cls.group,
+        )
         cls.form = PostForm()
 
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-        
+
     def setUp(self):
         self.guest_client = Client()
         self.user = User.objects.create_user(username='StasBasov')
@@ -40,7 +40,7 @@ class PostFormTests(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_create_post(self):
-        post_count = Post.objects.count()  
+        post_count = Post.objects.count()
         form_data = {
             'text': 'Testing text',
             'group': self.group.id,
@@ -52,15 +52,9 @@ class PostFormTests(TestCase):
             follow=True
         )
         self.assertEqual(response.status_code, 200)
-        self.assertRedirects(
-            response, reverse(
-                'posts:profile', kwargs={
-                    'username': 'StasBasov'
-                    }
-                )
-            )
+        self.assertRedirects(response, reverse(
+                'posts:profile', kwargs={'username': 'StasBasov'}))
         self.assertEqual(Post.objects.count(), post_count + 1)
-        
         self.assertTrue(
             Group.objects.filter(
                 description='testing',
@@ -76,9 +70,7 @@ class PostFormTests(TestCase):
         }
         response = self.authorized_client.post(
             reverse('posts:post_edit', kwargs={
-                        'post_id': self.post.id,
-                        }
-                    ),
+                        'post_id': self.post.id,}),
             data=form_data,
             follow=True
         )
@@ -87,10 +79,7 @@ class PostFormTests(TestCase):
         self.assertRedirects(
             response, reverse(
                 'posts:post_detail', kwargs={
-                    'post_id': self.post.id,
-                    }
-                )
-            )
+                    'post_id': self.post.id,}))
         self.assertTrue(
             Group.objects.filter(
                 description='testing',

@@ -31,14 +31,14 @@ class TaskPagesTests(TestCase):
     def test_pages_uses_correct_template(self):
         templates_pages_names = {
             'posts/index.html': reverse('posts:index'),
-            'posts/group_list.html': (
-                 reverse('posts:group_list', kwargs={'slug': 'test_slug'})),
-            'posts/profile.html': (
-                 reverse('posts:profile', kwargs={'username': 'StasBasov'})),
-            'posts/post_detail.html': (
-                 reverse('posts:post_detail', args='1')),
-            'posts/create_post.html': (
-                 reverse('posts:post_edit', args={'slug': 'test-slug'})),
+            'posts/group_list.html': (reverse(
+                'posts:group_list', kwargs={'slug': 'test_slug'})),
+            'posts/profile.html': (reverse(
+                'posts:profile', kwargs={'username': 'StasBasov'})),
+            'posts/post_detail.html': (reverse(
+                'posts:post_detail', args='1')),
+            'posts/create_post.html': (reverse(
+                'posts:post_edit', args={'slug': 'test-slug'})),
             'posts/create_post.html': reverse('posts:create_post'),
         }
         for template, reverse_name in templates_pages_names.items():
@@ -60,9 +60,7 @@ class TaskPagesTests(TestCase):
     def test_edit_page_context(self):
         response = self.authorized_client.get(
             reverse(
-                'posts:post_edit', args='1'
-                )
-            )
+                'posts:post_edit', args='1'))
         form_fields = {
             "text": forms.fields.CharField,
             "group": forms.fields.ChoiceField,
@@ -79,22 +77,19 @@ class TaskPagesTests(TestCase):
 
     def test_group_page_show_correct_context(self):
         response = self.authorized_client.get(
-            reverse('posts:group_list', args=[self.group.slug])
-        )
+            reverse('posts:group_list', args=[self.group.slug]))
         self.assertEqual(response.context["group"], self.group)
         self.assertIn("page_obj", response.context)
 
     def test_profile_page_show_correct_context(self):
         response = self.authorized_client.get(
-            reverse('posts:profile', args=[self.user.username])
-        )
+            reverse('posts:profile', args=[self.user.username]))
         self.assertEqual(response.context['user'], self.user)
         self.assertIn('page_obj', response.context)
 
     def test_post_edit_page_show_correct_context(self):
         response = self.authorized_client.get(
-            reverse('posts:post_edit', args='1')
-        )
+            reverse('posts:post_edit', args='1'))
         self.assertIn("form", response.context)
         self.assertEqual(response.context["post"], self.post)
 
@@ -140,27 +135,19 @@ class PaginatorViewsTest(TestCase):
                 reverse('posts:index') + '?page=2': second_page_len_posts,
                 reverse(
                     'posts:group_list', kwargs={
-                        'slug': self.group.slug,
-                        }
-                    ):
+                        'slug': self.group.slug,}):
                 first_page_len_posts,
                 reverse(
                     'posts:group_list', kwargs={
-                        'slug': self.group.slug,
-                        }
-                    )
+                        'slug': self.group.slug,})
                 + '?page=2': second_page_len_posts,
                 reverse(
                     'posts:profile', kwargs={
-                        'username': self.user.username
-                        }
-                    ):
+                        'username': self.user.username}):
                 first_page_len_posts,
                 reverse(
                     'posts:profile', kwargs={
-                        'username': self.user.username
-                        }
-                    )
+                        'username': self.user.username})
                 + '?page=2': second_page_len_posts,
             }
             for reverse_page, len_posts in context.items():
