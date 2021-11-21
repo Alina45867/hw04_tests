@@ -53,7 +53,7 @@ class PostFormTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, reverse(
-                'posts:profile', kwargs={'username': 'StasBasov'}))
+            'posts:profile', kwargs={'username': 'StasBasov'}))
         self.assertEqual(Post.objects.count(), post_count + 1)
         self.assertTrue(
             Group.objects.filter(
@@ -70,7 +70,7 @@ class PostFormTests(TestCase):
         }
         response = self.authorized_client.post(
             reverse('posts:post_edit', kwargs={
-                        'post_id': self.post.id,}),
+                'post_id': self.post.id, }),
             data=form_data,
             follow=True
         )
@@ -79,7 +79,7 @@ class PostFormTests(TestCase):
         self.assertRedirects(
             response, reverse(
                 'posts:post_detail', kwargs={
-                    'post_id': self.post.id,}))
+                    'post_id': self.post.id, }))
         self.assertTrue(
             Group.objects.filter(
                 description='testing',
