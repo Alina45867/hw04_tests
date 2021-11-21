@@ -5,6 +5,7 @@ from ..models import Group, Post
 
 User = get_user_model()
 
+
 class PostModelTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -19,7 +20,6 @@ class PostModelTest(TestCase):
             author=cls.user,
             text='Тестовая группа',
         )
-
 
     def test_models_have_correct_object_names(self):
         task = PostModelTest.posts

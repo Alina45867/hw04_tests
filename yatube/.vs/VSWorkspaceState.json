@@ -1,9 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\tests",
-    "\\tests\\tests"
+    "\\posts",
+    "\\posts\\tests",
+    "\\yatube"
   ],
-  "SelectedNode": "\\tests\\tests\\test_forms.py",
+  "SelectedNode": "\\posts\\tests\\test_models.py",
   "PreviewInSolutionExplorer": false
 }

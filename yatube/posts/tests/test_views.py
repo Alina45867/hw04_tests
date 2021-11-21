@@ -1,10 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
-from django.http import response
 from django import forms
 from posts.models import Group, Post
-from posts.forms import PostForm
 
 User = get_user_model()
 
@@ -15,17 +13,15 @@ class TaskPagesTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='user')
         cls.group = Group.objects.create(
-                title = 'Test',
-                slug = 'test_slug',
-                description = 'testing',
-
+                title='Test',
+                slug='test_slug',
+                description='testing',
             )
 
-       
         cls.post = Post.objects.create(
-                author = cls.user,
-                text = 'Test_group',
-                group = cls.group,
+                author=cls.user,
+                text='Test_group',
+                group=cls.group,
             )
 
     def setUp(self):
@@ -76,13 +72,11 @@ class TaskPagesTests(TestCase):
                 field_filled = response.context.get("form").fields.get(name)
                 self.assertIsInstance(field_filled, expected)
 
-
     def test_index_page_show_correct_context(self):
         response = self.authorized_client.get(reverse('posts:index'))
         post = response.context["page_obj"][0]
         self.assertEqual(post, self.post)
       
-
     def test_group_page_show_correct_context(self):
         response = self.authorized_client.get(
             reverse('posts:group_list', args=[self.group.slug])
@@ -96,8 +90,7 @@ class TaskPagesTests(TestCase):
         )
         self.assertEqual(response.context['user'], self.user)
         self.assertIn('page_obj', response.context)
-        
-        
+    
     def test_post_edit_page_show_correct_context(self):
         response = self.authorized_client.get(
             reverse('posts:post_edit', args='1')
@@ -107,7 +100,7 @@ class TaskPagesTests(TestCase):
 
 class PaginatorViewsTest(TestCase):
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls): 
         super().setUpClass()
         cls.user = User.objects.create(
             username='posts_author',
@@ -117,7 +110,7 @@ class PaginatorViewsTest(TestCase):
             slug='test_slug',
             description='Тестовое описание группы',
         )
-        # Создаем 13 постов
+
         cls.post = [
             Post.objects.create(
                 text='Пост №' + str(i),
