@@ -40,8 +40,7 @@ class TaskPagesTests(TestCase):
             (reverse(
                 'posts:post_detail', args='1')): 'posts/post_detail.html',
             (reverse(
-                'posts:post_edit', args={
-                    'slug': 'test-slug'})): 'posts/create_post.html',
+                'posts:post_edit', args='1')): 'posts/create_post.html',
             reverse('posts:create_post'): 'posts/create_post.html',
         }
         for reverse_name, template in templates_pages_names.items():
