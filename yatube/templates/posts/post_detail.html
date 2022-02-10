@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+﻿﻿{% extends 'base.html' %}
 {% block title%}Пост {{ post.text|truncatechars:30 }}{% endblock %}
 {% block content %}
 <div class="row">
@@ -7,7 +7,7 @@
             <li class="list-group-item">
                 Дата публикации: {{ post.pub_date|date:"d E Y" }}
             </li>
-            {% if post.group %}
+
             <li class="list-group-item">
                 Группа: {{ post.group.title }}
             </li>
@@ -22,15 +22,14 @@
                     все посты пользователя
                 </a>
             </li>
-            {% endif %}
+            
         </ul>
         <p>{{ post.text|linebreaksbr }}</p>
-       
-       
-        <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-        
-        
+
+        {% if post.group %}
+            <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+        {% endif %}
+
     </article>
-    {% include 'posts/includes/paginator.html' %}
 </div>
 {% endblock %}

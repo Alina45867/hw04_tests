@@ -1,5 +1,11 @@
 ﻿{% extends "base.html" %}
-{% block title %}Добавить новую запись{% endblock %}
+{% block title %}
+    {% if edit %}
+        Редактировать запись
+    {% else %}
+        Добавить новую запись
+    {% endif %}
+{% endblock %}
 {% block content %}
 {% load user_filters %}
 <div class="row justify-content-center">
@@ -42,7 +48,7 @@
                                 Добавить
                                 {% endif %}
                             </button>
-                            
+
                         </div>
                     </form>
             </div>
