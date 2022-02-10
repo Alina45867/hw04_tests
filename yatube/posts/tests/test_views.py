@@ -73,4 +73,3 @@ class PaginatorViewsTest(TestCase):
                 len(response.context.get('page').object_list), POSTS
             )
 
-        

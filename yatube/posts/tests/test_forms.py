@@ -36,7 +36,7 @@ class PostFormTests(TestCase):
         self.POST_DETAIL = reverse('posts:post_detail', kwargs={
             'post_id': self.post.id, })
         self.POST_EDIT = reverse('posts:post_edit', args=[
-             self.user.username, self.post.id])
+            self.user.username, self.post.id])
         self.PROFILE = reverse(
             'posts:profile', args=[self.user.username])
 
@@ -98,4 +98,3 @@ class PostFormTests(TestCase):
         self.assertEqual(post.group, self.group2)
         self.assertEqual(post.author, self.user)
         self.assertEqual(response.status_code, 200)
-
