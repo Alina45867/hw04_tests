@@ -35,7 +35,6 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.all()
     paginator = Paginator(posts, NUMBER_POSTS)
-    count_page = paginator.count
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
@@ -70,16 +69,16 @@ def create_post(request):
 
 @login_required
 def post_edit(request, post_id, username):
-     if not request.user.username == username:
-         return redirect('posts:post_detail', post_id)
-     post = Post.objects.get(id=post_id, author=request.user)
-     form = PostForm(request.POST or None, instance=post)
-     if form.is_valid():
-         form.save()
-         return redirect('posts:post_detail',
-                          post_id=post.id)
-     context = {
-         'form': form,
-         'post': post
-     }
-     return render(request, 'posts/create_post.html', context)
+    if not request.user.username == username:
+        return redirect('posts:post_detail', post_id)
+    post = Post.objects.get(id=post_id, author=request.user)
+    form = PostForm(request.POST or None, instance=post)
+    if form.is_valid():
+        form.save()
+        return redirect('posts:post_detail',
+                         post_id=post.id)
+    context = {
+        'form': form,
+        'post': post
+    }
+    return render(request, 'posts/create_post.html', context)

@@ -1,10 +1,12 @@
 from django.test import Client, TestCase
 from django.urls import reverse
+from yatube.settings import POSTS
 from posts.models import Group, Post, User
 
 INDEX = reverse('posts:index')
 SLUG = 'testgroup'
 GROUP = reverse('posts:group_list', kwargs={'slug': SLUG})
+
 
 class TaskPagesTests(TestCase):
     @classmethod
@@ -32,10 +34,9 @@ class TaskPagesTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.POST_EDIT = reverse('posts:post_edit', args=[
-                self.user.username, self.post.id])
+            self.user.username, self.post.id])
         self.PROFILE = reverse(
             'posts:profile', args=[self.user.username])
-
 
     def test_post_in_url(self):
         urls_names = [
@@ -45,9 +46,7 @@ class TaskPagesTests(TestCase):
         ]
         for value in urls_names:
             with self.subTest(value=value):
-                response = self.authorized_client.get(value)
                 self.assertEqual(Post.objects.count(), 1)
-                
 
     def test_profile_page_show_correct_context(self):
         response = self.authorized_client.get(self.PROFILE)
@@ -67,7 +66,6 @@ class PaginatorViewsTest(TestCase):
             slug='test_slug',
             description='Тестовое описание группы',
         )
-
 
         def test_page_count_records(self):
             response = self.client.get(INDEX)

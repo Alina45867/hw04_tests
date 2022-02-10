@@ -10,6 +10,7 @@ SLUG = 'testgroup'
 GROUP_URL = reverse('posts:group_list', kwargs={'slug': SLUG})
 TEST_404 = 'about/___'
 
+
 class StaticURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -39,12 +40,12 @@ class StaticURLTests(TestCase):
 
     def test_pages_uses_correct_template(self):
         templates_pages_names = {
-            INDEX : 'posts/index.html',
-            GROUP_URL : 'posts/group_list.html',
-            self.PROFILE_URL : 'posts/profile.html',
-            self.POST_URL : 'posts/post_detail.html',
-            self.POST_EDIT_URL : 'posts/create_post.html',
-            CREATE_POST : 'posts/create_post.html',
+            INDEX: 'posts/index.html',
+            GROUP_URL: 'posts/group_list.html',
+            self.PROFILE_URL: 'posts/profile.html',
+            self.POST_URL: 'posts/post_detail.html',
+            self.POST_EDIT_URL: 'posts/create_post.html',
+            CREATE_POST: 'posts/create_post.html',
         }
         for adress, template in templates_pages_names.items():
             with self.subTest(adress=adress):
@@ -64,6 +65,3 @@ class StaticURLTests(TestCase):
         for url, client, status in urls_names:
             with self.subTest(url=url):
                 self.assertEqual(client.get(url).status_code, status)
-
-
-

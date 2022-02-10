@@ -3,7 +3,6 @@ from django.test import TestCase
 from ..models import Group, Post, User
 
 
-
 class PostModelTest(TestCase):
     @classmethod
     def setUpClass(cls):

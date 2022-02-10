@@ -1,12 +1,12 @@
 from django import forms
-from django.conf import settings
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User
 
 CREATE_POST = reverse('posts:create_post')
+
 
 class PostFormTests(TestCase):
     @classmethod
@@ -30,17 +30,15 @@ class PostFormTests(TestCase):
         )
         cls.form = PostForm()
 
-
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.POST_DETAIL = reverse('posts:post_detail', kwargs={
-            'post_id': self.post.id,})
+            'post_id': self.post.id, })
         self.POST_EDIT = reverse('posts:post_edit', args=[
-                self.user.username, self.post.id])
+             self.user.username, self.post.id])
         self.PROFILE = reverse(
             'posts:profile', args=[self.user.username])
-
 
     def test_new_page_show_correct_context(self):
         response = self.authorized_client.get(CREATE_POST)
@@ -53,7 +51,6 @@ class PostFormTests(TestCase):
                 field_filled = response.context.get("form").fields.get(name)
                 self.assertIsInstance(field_filled, expected)
 
-
     def test_edit_page_context(self):
         response = self.authorized_client.get(self.POST_EDIT)
         form_fields = {
@@ -64,7 +61,6 @@ class PostFormTests(TestCase):
             with self.subTest(name=name):
                 field_filled = response.context.get("form").fields.get(name)
                 self.assertIsInstance(field_filled, expected)
-
 
     def test_create_post(self):
         post = Post.objects.count()
@@ -86,7 +82,6 @@ class PostFormTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, self.PROFILE)
 
-
     def test_post_edit(self):
         post = Post.objects.first()
         form_data = {
@@ -103,5 +98,4 @@ class PostFormTests(TestCase):
         self.assertEqual(post.group, self.group2)
         self.assertEqual(post.author, self.user)
         self.assertEqual(response.status_code, 200)
-       
-        
+
