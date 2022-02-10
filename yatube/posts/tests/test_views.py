@@ -72,4 +72,3 @@ class PaginatorViewsTest(TestCase):
             self.assertEqual(
                 len(response.context.get('page').object_list), POSTS
             )
-
