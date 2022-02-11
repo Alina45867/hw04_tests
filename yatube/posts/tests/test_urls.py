@@ -27,7 +27,7 @@ class StaticURLTests(TestCase):
         cls.POST_URL = reverse('posts:post_detail',
                                args=[cls.post.id])
         cls.POST_EDIT_URL = reverse('posts:post_edit',
-                                    args=[cls.user.username, cls.post.id])
+                                    args=[cls.post.id])
         cls.PROFILE_URL = reverse(
             'posts:profile', args=[cls.user.username])
 

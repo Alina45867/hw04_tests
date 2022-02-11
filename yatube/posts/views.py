@@ -68,10 +68,10 @@ def create_post(request):
 
 
 @login_required
-def post_edit(request, post_id, username):
-    if not request.user.username == username:
+def post_edit(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if not request.user.id == post.id:
         return redirect('posts:post_detail', post_id)
-    post = Post.objects.get(id=post_id, author=request.user)
     form = PostForm(request.POST or None, instance=post)
     if form.is_valid():
         form.save()

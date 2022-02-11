@@ -35,8 +35,8 @@ class PostFormTests(TestCase):
         self.authorized_client.force_login(self.user)
         self.POST_DETAIL = reverse('posts:post_detail', kwargs={
             'post_id': self.post.id, })
-        self.POST_EDIT = reverse('posts:post_edit', args=[
-            self.user.username, self.post.id])
+        self.POST_EDIT = reverse('posts:post_edit', kwargs={
+            'post_id': self.post.id})
         self.PROFILE = reverse(
             'posts:profile', args=[self.user.username])
 
