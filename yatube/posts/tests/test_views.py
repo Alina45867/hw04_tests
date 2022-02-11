@@ -1,5 +1,6 @@
 from django.test import Client, TestCase
 from django.urls import reverse
+from yatube.settings import POSTS
 from posts.models import Group, Post, User
 
 INDEX = reverse('posts:index')
@@ -72,19 +73,18 @@ class PaginatorViewsTest(TestCase):
             description='Тестовое описание группы',
         )
 
-        def test_paginator_on_pages(self): 
-            first_page_len_posts = 10 
-            second_page_len_posts = 3 
-            context = { 
+        def test_paginator_on_pages(self):
+            first_page_len_posts = 10
+            second_page_len_posts = 3
+            context = {
                 INDEX: first_page_len_posts,
                 INDEX + '?page=2': second_page_len_posts,
                 GROUP: first_page_len_posts,
                 GROUP + '?page=2': second_page_len_posts,
                 self.PROFILE: first_page_len_posts,
-                self.PROFILE + '?page=2': second_page_len_posts, 
-           } 
-
-            for reverse_page, len_posts in context.items(): 
-                with self.subTest(reverse=reverse): 
-                    self.assertEqual(len(self.client.get( 
+                self.PROFILE + '?page=2': second_page_len_posts,
+           }
+            for reverse_page, len_posts in context.items():
+                with self.subTest(reverse=reverse):
+                    self.assertEqual(len(self.client.get(
                         reverse_page).context.get('page')), len_posts)
