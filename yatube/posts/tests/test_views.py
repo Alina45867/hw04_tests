@@ -83,7 +83,7 @@ class PaginatorViewsTest(TestCase):
                 GROUP + '?page=2': second_page_len_posts,
                 self.PROFILE: first_page_len_posts,
                 self.PROFILE + '?page=2': second_page_len_posts,
-           }
+            }
             for reverse_page, len_posts in context.items():
                 with self.subTest(reverse=reverse):
                     self.assertEqual(len(self.client.get(
