@@ -1,6 +1,5 @@
 from django.test import Client, TestCase
 from django.urls import reverse
-from yatube.settings import POSTS
 from posts.models import Group, Post, User
 
 INDEX = reverse('posts:index')
@@ -65,7 +64,7 @@ class PaginatorViewsTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create(username='posts_author')
-        posts = [Post(author=cls.user, text=str(i)) for i in range(POSTS)]
+        posts = [Post(author=cls.user, text=str(i)) for i in range(13)]
         Post.objects.bulk_create(posts)
         cls.group = Group.objects.create(
             title='Тестовое название группы',
