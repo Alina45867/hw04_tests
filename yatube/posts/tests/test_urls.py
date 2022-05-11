@@ -73,7 +73,8 @@ class StaticURLTests(TestCase):
 
     def test_redirects(self):
         urls_names = [
-            [CREATE_POST, self.guest_client, f'{AUTH_LOGIN}?next={CREATE_POST}'],
+            [CREATE_POST, self.guest_client, \
+                f'{AUTH_LOGIN}?next={CREATE_POST}'],
             [self.POST_EDIT_URL, self.guest_client,
              f'{AUTH_LOGIN}?next={self.POST_EDIT_URL}'],
             [self.POST_EDIT_URL, self.authorized_client2, self.POST_URL],

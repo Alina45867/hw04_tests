@@ -45,10 +45,10 @@ class TaskPagesTests(TestCase):
     def test_index_page_show_correct_context(self):
         response = self.authorized_client.get(INDEX)
         form_fields = {
-            'author': self.post.author,          
+            'author': self.post.author,
             'text': self.post.text,
             'group': self.post.group,
-        }        
+        }
         for value, expected in form_fields.items():
             with self.subTest(value=value):
                 self.assertIn('page_obj', response.context)

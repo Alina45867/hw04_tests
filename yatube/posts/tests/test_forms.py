@@ -44,16 +44,17 @@ class PostFormTests(TestCase):
         urls_names = [
             CREATE_POST,
             self.POST_EDIT,
-            ]
+        ]
         form_fields = {
             "text": forms.fields.CharField,
             "group": forms.fields.ChoiceField,
         }
         for url in urls_names:
-            response = self.authorized_client.get(url) 
+            response = self.authorized_client.get(url)
             for name, expected in form_fields.items():
                 with self.subTest(name=name):
-                    field_filled = response.context.get("form").fields.get(name)
+                    field_filled = response.context.get("form").fields.get \
+                        (name)
                     self.assertIsInstance(field_filled, expected)
 
     def test_create_post(self):
