@@ -3,7 +3,7 @@
 
 {% block content %}
     <div class="container">
-        {% block head %} <h1>{{ group.title }}</h1>{% endblock %}
+        {% block header %} <h1>{{ group.title }}</h1>{% endblock %}
         <p>{{ group.description|linebreaksbr }}</p>
         <article>
             {% for post in page_obj %}

@@ -6,17 +6,21 @@ from posts.models import Group, Post, User
 INDEX = reverse('posts:index')
 CREATE_POST = reverse('posts:create_post')
 AUTH_LOGIN = reverse('login')
+USERNAME = 'user'
+USERNAME2 = 'USERNAME2'
 SLUG = 'testgroup'
 GROUP_URL = reverse('posts:group_list', kwargs={'slug': SLUG})
 TEST_404 = 'about/___'
+PROFILE_URL = reverse('posts:profile', kwargs={'username': USERNAME})
+AUTH_LOGIN = reverse('login')
 
 
 class StaticURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='user')
-        cls.user2 = User.objects.create(username='USERNAME2')
+        cls.user = User.objects.create_user(username=USERNAME)
+        cls.user2 = User.objects.create(username=USERNAME2)
         cls.group = Group.objects.create(
             slug=SLUG,
         )
@@ -28,8 +32,6 @@ class StaticURLTests(TestCase):
                                args=[cls.post.id])
         cls.POST_EDIT_URL = reverse('posts:post_edit',
                                     args=[cls.post.id])
-        cls.PROFILE_URL = reverse(
-            'posts:profile', args=[cls.user.username])
 
     def setUp(self):
         self.guest_client = Client()
@@ -42,7 +44,7 @@ class StaticURLTests(TestCase):
         templates_pages_names = {
             INDEX: 'posts/index.html',
             GROUP_URL: 'posts/group_list.html',
-            self.PROFILE_URL: 'posts/profile.html',
+            PROFILE_URL: 'posts/profile.html',
             self.POST_URL: 'posts/post_detail.html',
             self.POST_EDIT_URL: 'posts/create_post.html',
             CREATE_POST: 'posts/create_post.html',
@@ -55,13 +57,27 @@ class StaticURLTests(TestCase):
     def test_urls_status_code(self):
         urls_names = [
             [self.POST_EDIT_URL, self.authorized_client2, 302],
+            [self.POST_EDIT_URL, self.guest_client, 302],
+            [self.POST_EDIT_URL, self.authorized_client, 200],
             [INDEX, self.guest_client, 200],
             [CREATE_POST, self.authorized_client, 200],
+            [CREATE_POST, self.guest_client, 302],
             [GROUP_URL, self.guest_client, 200],
             [self.POST_URL, self.guest_client, 200],
-            [self.PROFILE_URL, self.guest_client, 200],
+            [PROFILE_URL, self.guest_client, 200],
             [TEST_404, self.authorized_client, 404],
         ]
         for url, client, status in urls_names:
             with self.subTest(url=url):
                 self.assertEqual(client.get(url).status_code, status)
+
+    def test_redirects(self):
+        urls_names = [
+            [CREATE_POST, self.guest_client, f'{AUTH_LOGIN}?next={CREATE_POST}'],
+            [self.POST_EDIT_URL, self.guest_client,
+             f'{AUTH_LOGIN}?next={self.POST_EDIT_URL}'],
+            [self.POST_EDIT_URL, self.authorized_client2, self.POST_URL],
+        ]
+        for url, client, redirect in urls_names:
+            with self.subTest(url=url):
+                self.assertRedirects(client.get(url, follow=True), redirect)
