@@ -53,8 +53,8 @@ class PostFormTests(TestCase):
             response = self.authorized_client.get(url)
             for name, expected in form_fields.items():
                 with self.subTest(name=name):
-                    field_filled = response.context.get("form").fields.get\
-                        (name)
+                    field_filled = (
+                        response.context.get("form").fields.get(name))
                     self.assertIsInstance(field_filled, expected)
 
     def test_create_post(self):
