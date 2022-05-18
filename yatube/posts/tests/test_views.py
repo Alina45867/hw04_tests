@@ -69,7 +69,8 @@ class TaskPagesTests(TestCase):
     def test_group_page_show_correct_context(self):
         response = self.authorized_client.get(GROUP)
         self.assertEqual(response.context.get('group').title, self.group.title)
-        self.assertEqual(response.context.get('group').description, self.group.description)
+        self.assertEqual(
+            response.context.get('group').description, self.group.description)
         self.assertEqual(response.context.get('group').slug, self.group.slug)
 
 

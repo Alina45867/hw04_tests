@@ -71,7 +71,7 @@ class StaticURLTests(TestCase):
             [TEST_404, self.authorized_client, 404],
         ]
         for url, client, status in urls_names:
-            with self.subTest(url=url and client==get_user(client).username):
+            with self.subTest(url=url and client == get_user(client).username):
                 self.assertEqual(client.get(url).status_code, status)
 
     def test_redirects(self):
