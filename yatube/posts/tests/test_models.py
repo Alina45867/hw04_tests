@@ -13,11 +13,11 @@ class PostModelTest(TestCase):
             slug='Тестовый слаг',
             description='Тестовое описание',
         )
-        cls.posts = Post.objects.create(
+        cls.post = Post.objects.create(
             author=cls.user,
             text='Тестовая группа',
         )
 
     def test_models_have_correct_object_names(self):
-        self.assertEqual(self.posts.text, str(self.posts))
-        self.assertEqual(self.group.title, str(self.posts))
+        self.assertEqual(self.post.text, str(self.post))
+        self.assertEqual(self.group.title, str(self.group))

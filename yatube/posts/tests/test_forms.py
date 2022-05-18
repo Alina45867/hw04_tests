@@ -59,9 +59,8 @@ class PostFormTests(TestCase):
 
     def test_create_post(self):
         post = Post.objects.count()
-        group = PostFormTests.group
         form_data = {
-            'text': 'Testing text',
+            'text': self.post.text,
             'group': self.group.id,
 
         }
@@ -70,29 +69,31 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True
         )
-        post1 = Post.objects.first()
-        self.assertTrue(post1)
-        self.assertEqual(Post.objects.count(), post + 1)
-        self.assertEqual(post1.text, form_data['text'])
-        self.assertEqual(post1.group, group)
-        self.assertEqual(post1.author, self.user)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, PROFILE)
+        self.assertEqual(Post.objects.count(), post + 1)
+        self.assertTrue(
+            Post.objects.filter(
+                text=self.post.text,
+                group=self.post.group,
+            ).exists()
+        )
 
     def test_post_edit(self):
-        group = PostFormTests.group2
-        user = PostFormTests.user
+        post = Post.objects.count()
         form_data = {
-            'text': 'New testing text',
-            'group': self.group2.id,
+            'text': self.post.text,
+            'group': self.group.id,
         }
         response = self.authorized_client.post(
             self.POST_EDIT,
             data=form_data,
             follow=True
         )
-        post = response.context['post']
-        self.assertEqual(post.text, form_data['text'])
-        self.assertEqual(post.group, group)
-        self.assertEqual(post.author, user)
+        self.assertEqual(Post.objects.count(), post)
+        self.assertTrue(
+            Post.objects.filter(
+                text=self.post.text,
+                group=self.post.group,
+            ).exists())
         self.assertEqual(response.status_code, 200)

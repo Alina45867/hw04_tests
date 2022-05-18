@@ -17,13 +17,12 @@
             {% endif %}
         </div>
         <div class="card-body">
-            <form method="post" enctype="multipart/form-data">
-                {% if edit %}
-                <form action="{% url 'posts:post_edit' post_id=post.id %}">
-                    {% else %}
-                    <form action="{% url 'posts:create_post' %}">
-                        {% endif %}
-                    </form>
+            <form action = "{% if edit %}
+                    {% url 'posts:post_edit' post_id=post.id %}
+                {% else %}
+                    {% url 'posts:create_post' %}
+                {% endif %}" method="post" enctype="multipart/form-data">
+            </form>
 
                     {% csrf_token %}
 
@@ -44,14 +43,15 @@
                     <div class="col-md-6 offset-md-4">
                         <button type="submit" class="btn btn-primary">
                             {% if edit %}
-                                Редактировать
+                            Редактировать
+                            {% else %}
+                            Добавить
                             {% endif %}
-                                Добавить
                         </button>
 
                     </div>
 
-        </div>
+</div>
 
     </div>
 </div>

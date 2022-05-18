@@ -32,26 +32,25 @@ class TaskPagesTests(TestCase):
             text='Test_group',
             group=cls.group,
         )
+        cls.POST_EDIT = reverse('posts:post_edit', args=[
+            cls.post.id])
+        cls.POST_DETAIL = reverse('posts:post_detail', kwargs={
+            'post_id': cls.post.id, })
 
     def setUp(self):
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        self.POST_EDIT = reverse('posts:post_edit', args=[
-            self.post.id])
-        self.POST_DETAIL = reverse('posts:post_detail', kwargs={
-            'post_id': self.post.id, })
 
     def test_index_page_show_correct_context(self):
         response = self.authorized_client.get(INDEX)
-        form_fields = {
-            'author': self.post.author,
-            'text': self.post.text,
-            'group': self.post.group,
-        }
-        for value, expected in form_fields.items():
-            with self.subTest(value=value):
-                self.assertIn('page_obj', response.context)
+        first_object = response.context['page_obj'][0]
+        post_text_0 = first_object.text
+        post_author_0 = first_object.author
+        post_group_0 = first_object.group
+        self.assertEqual(post_text_0, self.post.text)
+        self.assertEqual(post_author_0, self.post.author)
+        self.assertEqual(post_group_0, self.post.group)
 
     def test_post_not_in_group2(self):
         response_group = self.authorized_client.get(GROUP2)
@@ -63,11 +62,15 @@ class TaskPagesTests(TestCase):
 
     def test_post_detail_show_correct_context(self):
         response = self.authorized_client.get(self.POST_DETAIL)
-        self.assertEqual(self.post, response.context.get('post'))
+        self.assertEqual(response.context.get('post').author, self.post.author)
+        self.assertEqual(response.context.get('post').text, self.post.text)
+        self.assertEqual(response.context.get('post').group, self.post.group)
 
     def test_group_page_show_correct_context(self):
         response = self.authorized_client.get(GROUP)
-        self.assertEqual(self.group, response.context.get('group'))
+        self.assertEqual(response.context.get('group').title, self.group.title)
+        self.assertEqual(response.context.get('group').description, self.group.description)
+        self.assertEqual(response.context.get('group').slug, self.group.slug)
 
 
 class PaginatorViewsTest(TestCase):

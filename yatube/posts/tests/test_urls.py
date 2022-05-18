@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.auth import get_user
 from posts.models import Group, Post, User
 
 
@@ -32,6 +33,8 @@ class StaticURLTests(TestCase):
                                args=[cls.post.id])
         cls.POST_EDIT_URL = reverse('posts:post_edit',
                                     args=[cls.post.id])
+        cls.POST_NOT_AUTHOR = f'{AUTH_LOGIN}?next={CREATE_POST}'
+        cls.REDIRECT_POST_EDIT = f'{AUTH_LOGIN}?next={cls.POST_EDIT_URL}'
 
     def setUp(self):
         self.guest_client = Client()
@@ -68,15 +71,15 @@ class StaticURLTests(TestCase):
             [TEST_404, self.authorized_client, 404],
         ]
         for url, client, status in urls_names:
-            with self.subTest(url=url):
+            with self.subTest(url=url and client==get_user(client).username):
                 self.assertEqual(client.get(url).status_code, status)
 
     def test_redirects(self):
         urls_names = [
             [CREATE_POST, self.guest_client,
-                f'{AUTH_LOGIN}?next={CREATE_POST}'],
+                self.POST_NOT_AUTHOR],
             [self.POST_EDIT_URL, self.guest_client,
-             f'{AUTH_LOGIN}?next={self.POST_EDIT_URL}'],
+             self.REDIRECT_POST_EDIT],
             [self.POST_EDIT_URL, self.authorized_client2, self.POST_URL],
         ]
         for url, client, redirect in urls_names:
