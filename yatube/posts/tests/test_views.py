@@ -51,8 +51,7 @@ class TaskPagesTests(TestCase):
             [GROUP, self.authorized_client],
         ]
         for url, client in urls:
-            with self.subTest(url=url, client = get_user(client).username):
-                response = client.get(url)
+            with self.subTest(url = url, client = get_user(client).username):
                 post = Post.objects.first()
                 post_text_0 = post.text
                 post_author_0 = post.author
@@ -90,17 +89,18 @@ class PaginatorViewsTest(TestCase):
             slug='test_slug',
             description='Тестовое описание группы',
         )
+
     def test_paginator_on_pages(self):
-            first_page_len_posts = NUMBER_POSTS
-            second_page_len_posts = 3
-            context = {
-                INDEX: first_page_len_posts,
-                INDEX + '?page=2': second_page_len_posts,
-                GROUP: first_page_len_posts,
-                GROUP + '?page=2': second_page_len_posts,
-                PROFILE: first_page_len_posts,
-            }
-            for reverse_page, len_posts in context.items():
-                with self.subTest(reverse=reverse):
-                    self.assertEqual(len(self.client.get(
-                        reverse_page).context.get('page')), len_posts)
+        first_page_len_posts = NUMBER_POSTS
+        second_page_len_posts = 3
+        context = {
+            INDEX: first_page_len_posts,
+            INDEX + '?page=2': second_page_len_posts,
+            GROUP: first_page_len_posts,
+            GROUP + '?page=2': second_page_len_posts,
+            PROFILE: first_page_len_posts,
+        }
+        for reverse_page, len_posts in context.items():
+            with self.subTest(reverse=reverse):
+                self.assertEqual(len(self.client.get(
+                    reverse_page).context.get('page')), len_posts)
