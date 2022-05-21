@@ -51,7 +51,7 @@ class TaskPagesTests(TestCase):
             [GROUP, self.authorized_client],
         ]
         for url, client in urls:
-            with self.subTest(url = url, client = get_user(client).username):
+            with self.subTest(url=url, client=get_user(client).username):
                 post = Post.objects.first()
                 post_text_0 = post.text
                 post_author_0 = post.author
