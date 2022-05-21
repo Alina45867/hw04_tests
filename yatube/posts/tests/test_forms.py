@@ -30,15 +30,15 @@ class PostFormTests(TestCase):
             text='Test_post',
             group=cls.group,
         )
+        cls.POST_DETAIL = reverse('posts:post_detail', kwargs={
+            'post_id': cls.post.id, })
+        cls.POST_EDIT = reverse('posts:post_edit', kwargs={
+            'post_id': cls.post.id})
         cls.form = PostForm()
 
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-        self.POST_DETAIL = reverse('posts:post_detail', kwargs={
-            'post_id': self.post.id, })
-        self.POST_EDIT = reverse('posts:post_edit', kwargs={
-            'post_id': self.post.id})
 
     def test_new_page_show_correct_context(self):
         urls_names = [
@@ -58,9 +58,11 @@ class PostFormTests(TestCase):
                     self.assertIsInstance(field_filled, expected)
 
     def test_create_post(self):
+        post = Post.objects.first()
+        post.delete()
         post = Post.objects.count()
         form_data = {
-            'text': self.post.text,
+            'text': 'Nothing',
             'group': self.group.id,
 
         }
@@ -72,28 +74,25 @@ class PostFormTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, PROFILE)
         self.assertEqual(Post.objects.count(), post + 1)
-        self.assertTrue(
-            Post.objects.filter(
-                text=self.post.text,
-                group=self.post.group,
-            ).exists()
-        )
+        post = response.context['page_obj'][0]
+        self.assertEqual(post.text, form_data['text'])
+        self.assertEqual(post.group, self.group)
+        self.assertEqual(post.author, self.post.author)
 
     def test_post_edit(self):
         post = Post.objects.count()
         form_data = {
-            'text': self.post.text,
-            'group': self.group.id,
+            'text': 'Nothing2',
+            'group': self.group2.id,
         }
         response = self.authorized_client.post(
             self.POST_EDIT,
             data=form_data,
             follow=True
         )
-        self.assertEqual(Post.objects.count(), post)
-        self.assertTrue(
-            Post.objects.filter(
-                text=self.post.text,
-                group=self.post.group,
-            ).exists())
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(Post.objects.count(), post)
+        post = response.context['post']
+        self.assertEqual(post.text, form_data['text'])
+        self.assertEqual(post.group, self.group2)
+        self.assertEqual(post.author, self.post.author)

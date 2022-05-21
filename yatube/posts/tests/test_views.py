@@ -1,5 +1,6 @@
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.contrib.auth import get_user
 from posts.models import Group, Post, User
 from yatube.settings import NUMBER_POSTS
 
@@ -43,14 +44,22 @@ class TaskPagesTests(TestCase):
         self.authorized_client.force_login(self.user)
 
     def test_index_page_show_correct_context(self):
-        response = self.authorized_client.get(INDEX)
-        first_object = response.context['page_obj'][0]
-        post_text_0 = first_object.text
-        post_author_0 = first_object.author
-        post_group_0 = first_object.group
-        self.assertEqual(post_text_0, self.post.text)
-        self.assertEqual(post_author_0, self.post.author)
-        self.assertEqual(post_group_0, self.post.group)
+        urls = [
+            [INDEX, self.authorized_client],
+            [self.POST_DETAIL, self.authorized_client],
+            [PROFILE, self.authorized_client],
+            [GROUP, self.authorized_client],
+        ]
+        for url, client in urls:
+            with self.subTest(url=url, client = get_user(client).username):
+                response = client.get(url)
+                post = Post.objects.first()
+                post_text_0 = post.text
+                post_author_0 = post.author
+                post_group_0 = post.group
+                self.assertEqual(post_text_0, self.post.text)
+                self.assertEqual(post_author_0, self.post.author)
+                self.assertEqual(post_group_0, self.post.group)
 
     def test_post_not_in_group2(self):
         response_group = self.authorized_client.get(GROUP2)
@@ -60,18 +69,12 @@ class TaskPagesTests(TestCase):
         response = self.authorized_client.get(PROFILE)
         self.assertEqual(self.user, response.context.get('author'))
 
-    def test_post_detail_show_correct_context(self):
-        response = self.authorized_client.get(self.POST_DETAIL)
-        self.assertEqual(response.context.get('post').author, self.post.author)
-        self.assertEqual(response.context.get('post').text, self.post.text)
-        self.assertEqual(response.context.get('post').group, self.post.group)
-
     def test_group_page_show_correct_context(self):
         response = self.authorized_client.get(GROUP)
-        self.assertEqual(response.context.get('group').title, self.group.title)
-        self.assertEqual(
-            response.context.get('group').description, self.group.description)
-        self.assertEqual(response.context.get('group').slug, self.group.slug)
+        group = response.context.get('group')
+        self.assertEqual(group.title, self.group.title)
+        self.assertEqual(group.description, self.group.description)
+        self.assertEqual(group.slug, self.group.slug)
 
 
 class PaginatorViewsTest(TestCase):
@@ -79,15 +82,15 @@ class PaginatorViewsTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create(username=AUTHOR)
-        posts = [Post(author=cls.user, text=str(i)) for i in range(13)]
+        posts = [Post(
+            author=cls.user, text=str(i)) for i in range(NUMBER_POSTS)]
         Post.objects.bulk_create(posts)
         cls.group = Group.objects.create(
             title='Тестовое название группы',
             slug='test_slug',
             description='Тестовое описание группы',
         )
-
-        def test_paginator_on_pages(self):
+    def test_paginator_on_pages(self):
             first_page_len_posts = NUMBER_POSTS
             second_page_len_posts = 3
             context = {
