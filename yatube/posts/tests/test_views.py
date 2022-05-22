@@ -5,7 +5,7 @@ from posts.models import Group, Post, User
 from yatube.settings import NUMBER_POSTS
 
 INDEX = reverse('posts:index')
-SLUG = 'testgroup'
+SLUG = 'test_slug'
 GROUP = reverse('posts:group_list', kwargs={'slug': SLUG})
 SLUG2 = 'testgroup2'
 GROUP2 = reverse('posts:group_list', kwargs={'slug': SLUG2})
@@ -81,14 +81,14 @@ class PaginatorViewsTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create(username=AUTHOR)
-        posts = [Post(
-            author=cls.user, text=str(i)) for i in range(NUMBER_POSTS)]
-        Post.objects.bulk_create(posts)
         cls.group = Group.objects.create(
             title='Тестовое название группы',
-            slug='test_slug',
+            slug=SLUG,
             description='Тестовое описание группы',
         )
+        posts = [Post(
+           author=cls.user, group=cls.group, text=str(i)) for i in range(13)]
+        Post.objects.bulk_create(posts)
 
     def test_paginator_on_pages(self):
         first_page_len_posts = NUMBER_POSTS
@@ -103,4 +103,4 @@ class PaginatorViewsTest(TestCase):
         for reverse_page, len_posts in context.items():
             with self.subTest(reverse=reverse):
                 self.assertEqual(len(self.client.get(
-                    reverse_page).context.get('page')), len_posts)
+                    reverse_page).context.get('page_obj')), len_posts)
